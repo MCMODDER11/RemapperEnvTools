@@ -1,4 +1,6 @@
-import { Difficulty, CustomEvent, Environment, LOOKUP, Geometry } from "https://deno.land/x/remapper@3.1.1/src/mod.ts"
+import { Difficulty, CustomEvent, Environment, LOOKUP, Geometry, GEO_SHADER, ColorType } from "https://deno.land/x/remapper@3.1.1/src/mod.ts"
+
+let materials = []
 
 function softRemove(lookup: LOOKUP,id: Array<string>,){
     id.forEach((env) =>{
@@ -35,7 +37,37 @@ class Sphere {
     }
 }
 class Material {
-    constructor(mapInput:Difficulty,shader:string,color:Array<string>,track:string) {
-        mapInput.geoMaterials
+    constructor(mapInput:Difficulty,matName:string,shader:GEO_SHADER,color:ColorType,track:string,shaderKeywords:Array<string>) {
+        switch(typeof track) {
+            case "undefined":
+                if(typeof shaderKeywords == "undefined") {
+                    mapInput.geoMaterials[matName] = {
+                        "shader": shader,
+                        "color": color
+                    }
+                } else {
+                    mapInput.geoMaterials[matName] = {
+                        "shader": shader,
+                        "shaderKeywords": shaderKeywords,
+                        "color": color
+                    }
+                }
+                break;
+            default:
+                if(typeof shaderKeywords == "undefined") {
+                    mapInput.geoMaterials[matName] = {
+                        "shader": shader,
+                        "color": color,
+                        "track": track
+                    }
+                } else {
+                    mapInput.geoMaterials[matName] = {
+                        "shader": shader,
+                        "shaderKeywords": shaderKeywords,
+                        "color": color,
+                        "track": track
+                    }
+                }
+        }
     }
 }
